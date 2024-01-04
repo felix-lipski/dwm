@@ -211,6 +211,28 @@ drw_scm_create(Drw *drw, char *clrnames[], size_t clrcount)
 	return ret;
 }
 
+/* static char white[] = "#ffffff"; */
+/* static char black[] = "#000000"; */
+/* static char gray[]  = "#888888"; */
+/* static char *paletteHexes[16] = { */
+/*     "#111111", "#FFFFDD", "#4477AA", "#0033FF", "#00AA77", "#220099", "#225533", "#441111", "#6600DD", "#77AA00", "#CC0099", "#CC2200", "#CC9977", "#DDBB00", "#FF5500", "#FF7799" */
+/* }; */
+int drw_palette_create(Drw *drw, Clr *palette) {
+	size_t i;
+	/* Clr ret[16]; */
+
+	/* need at least two colors for a scheme */
+	/* if (!drw || !(ret = ecalloc(16, sizeof(XftColor)))) */
+	/* 	return NULL; */
+
+	for (i = 0; i < 16; i++)
+		drw_clr_create(drw, &palette[i], paletteHexes[i]);
+	/* return ret; */
+	if (drw) drw->palette = palette;
+
+	return 0;
+}
+
 void
 drw_setfontset(Drw *drw, Fnt *set)
 {
@@ -236,6 +258,71 @@ drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int
 	else
 		XDrawRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w - 1, h - 1);
 }
+
+void drw_color(Drw *drw, int indx) {
+	XSetForeground(drw->dpy, drw->gc, drw->palette[indx].pixel);
+}
+
+void drw_dither(Drw *drw) {
+	for (int x=0; x<16; x++) {
+	  XSetForeground(drw->dpy, drw->gc, drw->palette[x].pixel);
+	  XFillRectangle(drw->dpy, drw->drawable, drw->gc, 200 + x*8, 0, 8, 8);
+	}
+	XSetForeground(drw->dpy, drw->gc, drw->palette[DarkBrown].pixel);
+	XFillRectangle(drw->dpy, drw->drawable, drw->gc, 0, 0, 8, 8);
+}
+
+void drw_button_outline(Drw *drw, int x, int y, int w, int h) {
+	// top
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x+1, y  , x+w-1, y    );
+	// bottom
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x+1, y+h-1, x+w-1, y+h-1  );
+	// left
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x  , y+1, x    , y+h-1);
+	// right
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x+w-1, y+1, x+w-1, y+h-1);
+}
+
+void drw_button_shadow(Drw *drw, int x, int y, int w, int h) {
+	// bottom
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x+1, y+h-2, x+w-1, y+h-2  );
+	// right
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x+w-2, y+1, x+w-2, y+h-1);
+}
+
+void drw_button_highlight(Drw *drw, int x, int y, int w, int h) {
+	// top
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x+1, y+1 , x+w-1, y+1  );
+	// left
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x+1, y+1, x+1    , y+h-1);
+}
+
+void drw_button(Drw *drw, int x, int y, int w, int h) {
+	// OUTLINE
+	XSetForeground(drw->dpy, drw->gc, drw->palette[Black].pixel);
+	drw_button_outline(drw, x, y, w, h);
+	// SHADOW
+	XSetForeground(drw->dpy, drw->gc, drw->palette[DarkBrown].pixel);
+	drw_button_shadow(drw, x, y, w, h);
+	// HIGHLIGHT
+	XSetForeground(drw->dpy, drw->gc, drw->palette[White].pixel);
+	drw_button_highlight(drw, x, y, w, h);
+}
+
+void drw_button_pressed(Drw *drw, int x, int y, int w, int h) {
+	XSetForeground(drw->dpy, drw->gc, drw->palette[White].pixel);
+	// bottom
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x+1, y+h-1, x+w-1, y+h-1  );
+	// right
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x+w-1, y+1, x+w-1, y+h-1);
+
+	XSetForeground(drw->dpy, drw->gc, drw->palette[Black].pixel);
+	// top
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x+1, y  , x+w-1, y    );
+	// left
+	XDrawLine(drw->dpy, drw->drawable, drw->gc, x  , y+1, x    , y+h-1);
+}
+
 
 int
 drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert)
@@ -451,3 +538,4 @@ drw_cur_free(Drw *drw, Cur *cursor)
 	XFreeCursor(drw->dpy, cursor->cursor);
 	free(cursor);
 }
+

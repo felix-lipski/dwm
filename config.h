@@ -23,6 +23,13 @@ static char normfgcolor[]           = "#bbbbbb";
 static char selfgcolor[]            = "#eeeeee";
 static char selbordercolor[]        = "#770000";
 static char selbgcolor[]            = "#005577";
+/* static char *paletteHexes[16] = { */
+/*     "#0033FF", "#00AA77", "#111111", "#220099", */
+/*     "#225533", "#441111", "#4477AA", "#6600DD", */
+/*     "#77AA00", "#CC0099", "#CC2200", "#CC9977", */
+/*     "#DDBB00", "#FF5500", "#FF7799", "#FFFFDD" */
+/* }; */
+
 static char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },

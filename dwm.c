@@ -341,6 +341,7 @@ static int restart = 0;
 static int running = 1;
 static Cur *cursor[CurLast];
 static Clr **scheme;
+static Clr palette[16];
 static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
@@ -653,8 +654,8 @@ cleanup(void)
 		cleanupmon(mons);
 	for (i = 0; i < CurLast; i++)
 		drw_cur_free(drw, cursor[i]);
-	for (i = 0; i < LENGTH(colors); i++)
-		free(scheme[i]);
+	/* for (i = 0; i < LENGTH(colors); i++) */
+	/* 	free(scheme[i]); */
 	free(scheme);
 	XDestroyWindow(dpy, wmcheckwin);
 	drw_free(drw);
@@ -896,9 +897,11 @@ drawbar(Monitor *m)
 
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
-		drw_setscheme(drw, scheme[SchemeNorm]);
+		/* drw_setscheme(drw, scheme[SchemeNorm]); */
+		drw_setscheme(drw, scheme[SchemeSel]);
 		tw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
 		drw_text(drw, m->ww - tw, 0, tw, bh, 0, stext, 0);
+		drw_button(drw, m->ww - tw, 0, tw, bh);
 	}
 
 	for (c = m->clients; c; c = c->next) {
@@ -912,26 +915,47 @@ drawbar(Monitor *m)
 		if (!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
 		continue;
 
+/* void drw_color(Drw *drw, int indx) { */
+		int is_selected = m->tagset[m->seltags] & 1 << i;
 		w = TEXTW(tags[i]);
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
+		if (is_selected) {
+			drw_button_pressed(drw, x, 0, w, bh);
+		} else {
+			drw_button(drw, x, 0, w, bh);
+		}
 		x += w;
 	}
 	w = TEXTW(m->ltsymbol);
 	drw_setscheme(drw, scheme[SchemeNorm]);
-	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
+	// the []=
+	/* x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0); */
 
 	if ((w = m->ww - tw - x) > bh) {
-		if (m->sel) {
-			drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
-			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
-			if (m->sel->isfloating)
-				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
-		} else {
-			drw_setscheme(drw, scheme[SchemeNorm]);
-			drw_rect(drw, x, 0, w, bh, 1, 1);
-		}
+		/* if (m->sel) { */
+		/* 	// current window title */
+		/* 	/1* drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]); *1/ */
+		/* 	drw_setscheme(drw, scheme[SchemeNorm]); */
+		/* 	drw_rect(drw, x, 0, w, bh, 1, 1); */
+		/* 	drw_button(drw, x, 0, w, bh); */
+		/* 	/1* drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0); *1/ */
+		/* 	/1* if (m->sel->isfloating) *1/ */
+		/* 	/1* 	drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0); *1/ */
+
+		/* } else { */
+		/* 	drw_setscheme(drw, scheme[SchemeNorm]); */
+		/* 	drw_rect(drw, x, 0, w, bh, 1, 1); */
+		/* /1* drw_button(drw, x, 0, w, bh); *1/ */
+		/* } */
+		drw_setscheme(drw, scheme[SchemeNorm]);
+		drw_rect(drw, x, 0, w, bh, 1, 1);
+		drw_button(drw, x, 0, w, bh);
 	}
+	/* drw_button(drw, 2, 2, 32, 16); */
+	/* drw_dither(drw); */
+	/* drw_map(drw, m->barwin, 0, 0, 300, bh); */
+	/* drw_map(drw, m->barwin, 700, 0, m->ww-700, bh); */
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 }
 
@@ -993,6 +1017,7 @@ focus(Client *c)
 		detachstack(c);
 		attachstack(c);
 		grabbuttons(c, 1);
+		// selected window border
 		XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 		setfocus(c);
 	} else {
@@ -1898,6 +1923,12 @@ setup(void)
 	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
 	for (i = 0; i < LENGTH(colors); i++)
 		scheme[i] = drw_scm_create(drw, colors[i], 3);
+	/* palette = ecalloc(16, sizeof(Clr *)); */
+	drw_palette_create(drw, palette);
+	/* Clr *scheme; */
+	/* Fnt *fonts; */
+	/* Clr *palette; */
+
 	/* init bars */
 	updatebars();
 	updatestatus();

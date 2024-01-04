@@ -1,5 +1,19 @@
 /* See LICENSE file for copyright and license details. */
 
+static char *paletteHexes[16] = {
+ "#121212", "#f5f5ff", "#4a73a7", "#0033FF",
+ "#00AA77", "#77AA00", "#DDBB00", "#FF5500",
+ "#CC2200", "#73413b", "#CC9977", "#6600DD",
+ "#220099", "#CC0099", "#FF7799", "#225533"
+};
+
+
+enum {
+	Black, White, Gray, Blue,
+	Turqoise, Green, Yellow, Orange,
+	Red, DarkBrown
+};
+
 typedef struct {
 	Cursor cursor;
 } Cur;
@@ -24,6 +38,7 @@ typedef struct {
 	GC gc;
 	Clr *scheme;
 	Fnt *fonts;
+	Clr *palette;
 } Drw;
 
 /* Drawable abstraction */
@@ -41,6 +56,8 @@ void drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned in
 /* Colorscheme abstraction */
 void drw_clr_create(Drw *drw, Clr *dest, const char *clrname);
 Clr *drw_scm_create(Drw *drw, char *clrnames[], size_t clrcount);
+/* Clr *drw_palette_create(Drw *drw, char *clrnames[], size_t clrcount); */
+int drw_palette_create(Drw *drw, Clr *palette);
 
 /* Cursor abstraction */
 Cur *drw_cur_create(Drw *drw, int shape);
@@ -51,8 +68,13 @@ void drw_setfontset(Drw *drw, Fnt *set);
 void drw_setscheme(Drw *drw, Clr *scm);
 
 /* Drawing functions */
+void drw_color(Drw *drw, int indx);
 void drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int invert);
+void drw_dither(Drw *drw);
 int drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert);
+void drw_button(Drw *drw, int x, int y, int w, int h);
+void drw_button_pressed(Drw *drw, int x, int y, int w, int h);
 
 /* Map functions */
 void drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h);
+
