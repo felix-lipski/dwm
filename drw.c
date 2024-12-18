@@ -302,7 +302,7 @@ void drw_button(Drw *drw, int x, int y, int w, int h) {
 	XSetForeground(drw->dpy, drw->gc, drw->palette[Black].pixel);
 	drw_button_outline(drw, x, y, w, h);
 	// SHADOW
-	XSetForeground(drw->dpy, drw->gc, drw->palette[DarkBrown].pixel);
+	XSetForeground(drw->dpy, drw->gc, drw->palette[DarkGray].pixel);
 	drw_button_shadow(drw, x, y, w, h);
 	// HIGHLIGHT
 	XSetForeground(drw->dpy, drw->gc, drw->palette[White].pixel);
@@ -351,7 +351,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
 		w = invert ? invert : ~invert;
 	} else {
 		XSetForeground(drw->dpy, drw->gc, drw->scheme[invert ? ColFg : ColBg].pixel);
-		XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w, h);
+		XFillRectangle(drw->dpy, drw->drawable, drw->gc, x + 1, y + 1, w - 2, h - 2);
 		d = XftDrawCreate(drw->dpy, drw->drawable,
 		                  DefaultVisual(drw->dpy, drw->screen),
 		                  DefaultColormap(drw->dpy, drw->screen));
@@ -538,4 +538,3 @@ drw_cur_free(Drw *drw, Cur *cursor)
 	XFreeCursor(drw->dpy, cursor->cursor);
 	free(cursor);
 }
-

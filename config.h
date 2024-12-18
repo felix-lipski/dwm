@@ -6,7 +6,7 @@
 #define BROWSER "librewolf"
 
 /* appearance */
-static unsigned int borderpx  = 3;        /* border pixel of windows */
+static unsigned int borderpx  = 1;        /* border pixel of windows */
 static unsigned int snap      = 32;       /* snap pixel */
 static unsigned int gappih    = 20;       /* horiz inner gap between windows */
 static unsigned int gappiv    = 10;       /* vert inner gap between windows */
@@ -16,13 +16,16 @@ static int swallowfloating    = 0;        /* 1 means swallow floating windows by
 static int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 1;        /* 0 means bottom bar */
-static char *fonts[]          = { "monospace:size=10", "NotoColorEmoji:pixelsize=10:antialias=true:autohint=true"  };
-static char normbgcolor[]           = "#222222";
-static char normbordercolor[]       = "#444444";
-static char normfgcolor[]           = "#bbbbbb";
-static char selfgcolor[]            = "#eeeeee";
-static char selbordercolor[]        = "#770000";
-static char selbgcolor[]            = "#005577";
+/* static char *fonts[]          = { "monospace:size=10", "NotoColorEmoji:pixelsize=10:antialias=true:autohint=true"  }; */
+static char *fonts[]          = { "Terminus (TTF):size=12:antialias=false", "NotoColorEmoji:pixelsize=10:antialias=true:autohint=true"  };
+/*static char *fonts[]          = { "MxPlus IBM BIOS:size=6:antialias=false", "NotoColorEmoji:pixelsize=10:antialias=true:autohint=true"  };*/
+/* static char *font = "Terminus (TTF):pixelsize=16:antialias=false:autohint=true"; */
+static char normbgcolor[]           = "#121212";
+static char normbordercolor[]       = "#4477aa";
+static char normfgcolor[]           = "#ffffdd";
+static char selfgcolor[]            = "#ffffdd";
+static char selbordercolor[]        = "#ffffdd";
+static char selbgcolor[]            = "#4477aa";
 /* static char *paletteHexes[16] = { */
 /*     "#0033FF", "#00AA77", "#111111", "#220099", */
 /*     "#225533", "#441111", "#4477AA", "#6600DD", */
@@ -57,6 +60,9 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	*/
 	/* class    instance      title       	 tags mask    isfloating   isterminal  noswallow  monitor */
+	{ "mothership", "mothership", NULL,    	    0,            1,           0,         0,        -1 },
+	{ "Gamblers", "Godot_Engine", NULL,    	    0,            1,           0,         0,        -1 },
+	{ "SynCity-DemoScene", "Godot_Engine", NULL,    	    0,            1,           0,         0,        -1 },
 	{ "Gimp",     NULL,       NULL,       	    1 << 8,       0,           0,         0,        -1 },
 	{ TERMCLASS,  NULL,       NULL,       	    0,            0,           1,         0,        -1 },
 	{ NULL,       NULL,       "Event Tester",   0,            0,           0,         1,        -1 },
@@ -196,6 +202,7 @@ static const Key keys[] = {
 	/* { MODKEY|ShiftMask,		XK_backslash,		spawn,		SHCMD("") }, */
 
 	{ MODKEY,			XK_a,		togglegaps,	{0} },
+	{ MODKEY,			XK_space,		swap12,	{0} },
 	{ MODKEY|ShiftMask,		XK_a,		defaultgaps,	{0} },
 	{ MODKEY,			XK_s,		togglesticky,	{0} },
 	/* { MODKEY|ShiftMask,		XK_s,		spawn,		SHCMD("") }, */
@@ -341,4 +348,3 @@ static const Button buttons[] = {
 	{ ClkTagBar,		0,		Button5,	shiftview,	{.i = 1} },
 	{ ClkRootWin,		0,		Button2,	togglebar,	{0} },
 };
-

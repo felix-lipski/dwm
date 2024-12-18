@@ -1,17 +1,17 @@
 /* See LICENSE file for copyright and license details. */
 
 static char *paletteHexes[16] = {
- "#121212", "#f5f5ff", "#4a73a7", "#0033FF",
+ "#121212", "#ffffdd", "#4477aa", "#0033FF",
  "#00AA77", "#77AA00", "#DDBB00", "#FF5500",
- "#CC2200", "#73413b", "#CC9977", "#6600DD",
- "#220099", "#CC0099", "#FF7799", "#225533"
+ "#CC2200", "#73413b", "#223b54", "#6600DD",
+ "#220099", "#332211", "#223b54", "#225533"
 };
 
 
 enum {
 	Black, White, Gray, Blue,
 	Turqoise, Green, Yellow, Orange,
-	Red, DarkBrown
+	Red, DarkBrown, DarkGray
 };
 
 typedef struct {
@@ -77,4 +77,3 @@ void drw_button_pressed(Drw *drw, int x, int y, int w, int h);
 
 /* Map functions */
 void drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h);
-

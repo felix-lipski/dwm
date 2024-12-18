@@ -25,7 +25,7 @@ static void getgaps(Monitor *m, int *oh, int *ov, int *ih, int *iv, unsigned int
 static void setgaps(int oh, int ov, int ih, int iv);
 
 /* Settings */
-static int enablegaps = 1;
+static int enablegaps = 0;
 
 static void
 setgaps(int oh, int ov, int ih, int iv)

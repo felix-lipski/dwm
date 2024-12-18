@@ -277,6 +277,7 @@ static void togglesticky(const Arg *arg);
 static void togglefullscr(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
+static void swap12(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
 static void unmanage(Client *c, int destroyed);
 static void unmapnotify(XEvent *e);
@@ -898,7 +899,7 @@ drawbar(Monitor *m)
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
 		/* drw_setscheme(drw, scheme[SchemeNorm]); */
-		drw_setscheme(drw, scheme[SchemeSel]);
+		drw_setscheme(drw, scheme[SchemeNorm]);
 		tw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
 		drw_text(drw, m->ww - tw, 0, tw, bh, 0, stext, 0);
 		drw_button(drw, m->ww - tw, 0, tw, bh);
@@ -948,14 +949,19 @@ drawbar(Monitor *m)
 		/* 	drw_rect(drw, x, 0, w, bh, 1, 1); */
 		/* /1* drw_button(drw, x, 0, w, bh); *1/ */
 		/* } */
+        // DRAW MIDDLE BAR
 		drw_setscheme(drw, scheme[SchemeNorm]);
 		drw_rect(drw, x, 0, w, bh, 1, 1);
-		drw_button(drw, x, 0, w, bh);
+		/*drw_button(drw, x, 0, w, bh);*/
 	}
 	/* drw_button(drw, 2, 2, 32, 16); */
 	/* drw_dither(drw); */
 	/* drw_map(drw, m->barwin, 0, 0, 300, bh); */
 	/* drw_map(drw, m->barwin, 700, 0, m->ww-700, bh); */
+
+	/* drw_setscheme(drw, scheme[SchemeNorm]); */
+    /* drw_rect(drw, 0, 0, 100, 100, 1, 1); */
+
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 }
 
@@ -966,6 +972,7 @@ drawbars(void)
 
 	for (m = mons; m; m = m->next)
 		drawbar(m);
+
 }
 
 void
@@ -2484,6 +2491,16 @@ view(const Arg *arg)
 	arrange(selmon);
 }
 
+void swap12(const Arg *arg) {
+	Arg a0 = {.ui = 1 << 0};
+	Arg a1 = {.ui = 1 << 1};
+
+	if (((1 << 0) & TAGMASK) == selmon->tagset[selmon->seltags])
+	    return view(&a1);
+
+	return view(&a0);
+}
+
 pid_t
 winpid(Window w)
 {
@@ -2760,4 +2777,3 @@ main(int argc, char *argv[])
 	XCloseDisplay(dpy);
 	return EXIT_SUCCESS;
 }
-
